@@ -7,6 +7,7 @@ import pygame
 import time
 import numpy as np
 import sys
+import random
 
 # Constants
 BLOCKSIZE = 200 # The pixel size of each block
@@ -91,6 +92,8 @@ class Grid():
     def ClaimBlock(self, x: int, y: int, player: int = 1):
         if self.matrix[y, x] == 0: # if the block is empty, then it can be claimed.
             self.matrix[y, x] = player
+            return(True)
+        return(False)
 
     def CheckWin(self):
         # Check for a win
@@ -124,6 +127,9 @@ def main():
     screen = pygame.display.set_mode((BLOCKSIZE * WIDTH, BLOCKSIZE * HEIGHT))
     clock = pygame.time.Clock()
 
+    # Initiate active player
+    current_player = random.randint(1,2)
+
     # Main loop
     ## Pygame events
     while True:
@@ -142,9 +148,8 @@ def main():
                 if event.key == pygame.K_DOWN:
                     cursor.move("down")
                 if event.key == pygame.K_SPACE:
-                    grid.ClaimBlock(cursor.x, cursor.y, 1)
-                if event.key == pygame.K_TAB:
-                    grid.ClaimBlock(cursor.x, cursor.y, 2)
+                    if grid.ClaimBlock(cursor.x, cursor.y, current_player):
+                        current_player = {1: 2, 2: 1}[current_player]
 
 
         # Fill Pygame screen
@@ -161,7 +166,10 @@ def main():
                                         (w * BLOCKSIZE + 5, h * BLOCKSIZE + 5, BLOCKSIZE - 5, BLOCKSIZE - 5))
 
         # Draw green cursor highlight
-        pygame.draw.rect(screen, (0, 255, 0), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 7)
+        if current_player == 1:
+            pygame.draw.rect(screen, (255, 0, 0), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 7)
+        else:
+            pygame.draw.rect(screen, (0, 0, 255), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 7)
 
         # Update Screen
         pygame.display.update()
