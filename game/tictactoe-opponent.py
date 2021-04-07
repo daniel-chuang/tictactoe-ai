@@ -1,10 +1,13 @@
 # Simple game of tictactoe on Pygame to experiment with.
+## This version is the base version of tictactoe.
+## There is no opponent yet, this is a 2 player game right now.
 
 # Imports
 import pygame
 import time
 import numpy as np
 import sys
+import random
 
 # Constants
 BLOCKSIZE = 200 # The pixel size of each block
@@ -122,6 +125,9 @@ def main():
     screen = pygame.display.set_mode((BLOCKSIZE * WIDTH, BLOCKSIZE * HEIGHT))
     clock = pygame.time.Clock()
 
+    # Initiate active player
+    current_player = random.randint(1,2)
+
     # Main loop
     ## Pygame events
     while True:
@@ -140,9 +146,8 @@ def main():
                 if event.key == pygame.K_DOWN:
                     cursor.move("down")
                 if event.key == pygame.K_SPACE:
-                    grid.ClaimBlock(cursor.x, cursor.y, 1)
-                if event.key == pygame.K_TAB:
-                    grid.ClaimBlock(cursor.x, cursor.y, 2)
+                    grid.ClaimBlock(cursor.x, cursor.y, current_player)
+                    current_player = {1: 2, 2: 1}[current_player]
 
 
         # Fill Pygame screen
@@ -158,9 +163,11 @@ def main():
                     pygame.draw.rect(screen, (0, 0, 255),
                                         (w * BLOCKSIZE + 5, h * BLOCKSIZE + 5, BLOCKSIZE - 5, BLOCKSIZE - 5))
 
-        # Draw green cursor highlight
-        pygame.draw.rect(screen, (0, 255, 0), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 7)
-
+        # Draw cursor highlight
+        if current_player == 1:
+            pygame.draw.rect(screen, (255, 0, 0), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 7)
+        else:
+            pygame.draw.rect(screen, (0, 0, 255), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 7)
         # Update Screen
         pygame.display.update()
 
