@@ -4,10 +4,14 @@
 
 # Imports
 import pygame
-import time
+import time # to pause game temporarily
 import numpy as np
-import sys
-import random
+import sys # to end program
+import random # to choose first player
+import os # to set video coordinates
+
+# Set game canvas coordinates
+os.environ['SDL_VIDEO_WINDOW_POS'] = f"{0},{0}" # setting 0,0 as coordinate for imaging
 
 # Constants
 BLOCKSIZE = 200 # The pixel size of each block
