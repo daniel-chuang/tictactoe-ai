@@ -141,7 +141,7 @@ class Opponent():
                  self.CheckCenter(),
                  self.CheckOppositeCorners(),
                  self.CheckEmptyCorner(),
-                 self.CheckEmptyCorner()
+                 self.CheckEmptySide()
                 ]
         """
         self.CheckWin()
@@ -156,117 +156,131 @@ class Opponent():
         for func in funcs:
             if func != None:
                 return(func)
+        print("Failed")
+        return("Failed","Failed","Failed")
 
     def CheckWin(self):
         matrixList = [self.Grid.matrix, np.transpose(self.Grid.matrix)] # self.matrix for rows, np.transpose(self.matrix) for columns
         matrixList.append([np.diag(matrix, k=0) for matrix in [self.Grid.matrix, np.rot90(self.Grid.matrix)]]) # appends diagonals
+        iterCount = 0
         for matrix in matrixList: # for rows and columns and diagonals(transpose for columns)
             for row in matrix: # for row checking
-                booleRow = row[row != 0]
-                if booleRow[booleRow == 1].shape[0] != 0:
-                    continue
-                elif booleRow.shape[0] == 2:
-                    return("Check Win")
+                iterCount += 1
+                booleRow = (row == 2)
+                if np.count_nonzero(booleRow) == 2 and row[row == 1].shape[0] == 0: # if there are 2 2s in a row and no 1s
+                    if iterCount <= 3:
+                        return("Check Win", np.where(row == 0)[0][0], iterCount - 1)
+                    elif iterCount <= 6:
+                        return("Check Win", iterCount - 4, np.where(row == 0)[0][0])
+                    elif iterCount == 7:
+                        index = np.where(row == 0)[0][0]
+                        return("Check Win", index, index)
+                    else:
+                        index = np.where(row == 0)[0][0]
+                        return("Check Win", 2-index, index)
         return(None)
 
     def CheckBlock(self):
         matrixList = [self.Grid.matrix, np.transpose(self.Grid.matrix)] # self.matrix for rows, np.transpose(self.matrix) for columns
         matrixList.append([np.diag(matrix, k=0) for matrix in [self.Grid.matrix, np.rot90(self.Grid.matrix)]]) # appends diagonals
+        iterCount = 0
         for matrix in matrixList: # for rows and columns and diagonals(transpose for columns)
             for row in matrix: # for row checking
-                booleRow = row[row != 0]
-                if booleRow[booleRow == 2].shape[0] != 0:
-                    continue
-                elif booleRow.shape[0] == 2:
-                    return("Check Block")
+                iterCount += 1
+                booleRow = (row == 1)
+                if np.count_nonzero(booleRow) == 2 and row[row == 2].shape[0] == 0:
+                    if iterCount <= 3:
+                        return("Check Block", np.where(row == 0)[0][0], iterCount - 1)
+                    elif iterCount <= 6:
+                        return("Check Block", iterCount - 4, np.where(row == 0)[0][0])
+                    elif iterCount == 7:
+                        index = np.where(row == 0)[0][0]
+                        return("Check Block", index, index)
+                    else:
+                        index = np.where(row == 0)[0][0]
+                        return("Check Block", 2-index, index)
         return(None)
 
     def CheckFork(self):
         # Makes an x and y list of all open blocks
-        openBlocksX = []
-        openBlocksY = []
+        openBlocks = []
         for x in range(0,3):
             for y in range(0,3):
                 if self.Grid.matrix[y, x] == 0:
-                    openBlocksX.append(x)
-                    openBlocksY.append(y)
+                    openBlocks.append((x,y))
 
         # Checks if playing in an open spot will make a fork
-        for x in openBlocksX:
-            for y in openBlocksY:
-                winCount = 0
-                tempMatrix = np.copy(self.Grid.matrix)
-                tempMatrix[y, x] = 2
-                matrixList = [tempMatrix, np.transpose(tempMatrix)] # self.tempMatrix for rows, np.transpose(self.tempMatrix) for columns
-                matrixList.append([np.diag(tempMatrix, k=0) for tempMatrix in [tempMatrix, np.rot90(tempMatrix)]]) # appends diagonals
-                for matrix in matrixList: # for rows and columns and diagonals(transpose for columns)
-                    for row in matrix: # for row checking
-                        booleRow = row[row != 0]
-                        if booleRow[booleRow == 1].shape[0] != 0:
-                            continue
-                        elif booleRow.shape[0] == 2:
-                            winCount += 1
-                if winCount >= 2:
-                    return("Check Fork")
+        for coord in openBlocks:
+            winCount = 0
+            tempMatrix = np.copy(self.Grid.matrix)
+            tempMatrix[coord[1], coord[0]] = 2
+            matrixList = [tempMatrix, np.transpose(tempMatrix)] # self.tempMatrix for rows, np.transpose(self.tempMatrix) for columns
+            matrixList.append([np.diag(tempMatrix, k=0) for tempMatrix in [tempMatrix, np.rot90(tempMatrix)]]) # appends diagonals
+            for matrix in matrixList: # for rows and columns and diagonals(transpose for columns)
+                for row in matrix: # for row checking
+                    booleRow = row[row != 0]
+                    if booleRow[booleRow == 1].shape[0] != 0:
+                        continue
+                    elif booleRow.shape[0] == 2:
+                        winCount += 1
+            if winCount >= 2:
+                return("Check Fork", coord[0], coord[1])
         return(None)
 
     def CheckBlockFork(self):
         # Makes an x and y list of all open blocks
-        openBlocksX = []
-        openBlocksY = []
+        openBlocks = []
         for x in range(0,3):
             for y in range(0,3):
                 if self.Grid.matrix[y, x] == 0:
-                    openBlocksX.append(x)
-                    openBlocksY.append(y)
+                    openBlocks.append((x,y))
 
         # Checks if playing in an open spot will make a fork
-        for x in openBlocksX:
-            for y in openBlocksY:
-                winCount = 0
-                tempMatrix = np.copy(self.Grid.matrix)
-                tempMatrix[y, x] = 1
-                matrixList = [tempMatrix, np.transpose(tempMatrix)] # self.tempMatrix for rows, np.transpose(self.tempMatrix) for columns
-                matrixList.append([np.diag(tempMatrix, k=0) for tempMatrix in [tempMatrix, np.rot90(tempMatrix)]]) # appends diagonals
-                for matrix in matrixList: # for rows and columns and diagonals(transpose for columns)
-                    for row in matrix: # for row checking
-                        booleRow = row[row != 0]
-                        if booleRow[booleRow == 2].shape[0] != 0:
-                            continue
-                        elif booleRow.shape[0] == 2:
-                            winCount += 1
-                if winCount >= 2:
-                    return("Check Block Fork")
+        for coord in openBlocks:
+            winCount = 0
+            tempMatrix = np.copy(self.Grid.matrix)
+            tempMatrix[coord[1], coord[0]] = 1
+            matrixList = [tempMatrix, np.transpose(tempMatrix)] # self.tempMatrix for rows, np.transpose(self.tempMatrix) for columns
+            matrixList.append([np.diag(tempMatrix, k=0) for tempMatrix in [tempMatrix, np.rot90(tempMatrix)]]) # appends diagonals
+            for matrix in matrixList: # for rows and columns and diagonals(transpose for columns)
+                for row in matrix: # for row checking
+                    booleRow = row[row != 0]
+                    if booleRow[booleRow == 2].shape[0] != 0:
+                        continue
+                    elif booleRow.shape[0] == 2:
+                        winCount += 1
+            if winCount >= 2:
+                return("Check Fork", coord[0], coord[1])
         return(None)
 
     def CheckCenter(self):
         if self.Grid.matrix[1,1] == 0:
-            return("Check Center")
+            return("Check Center", 1, 1)
         return(None)
 
     def CheckOppositeCorners(self):
         for x in [0, 2]:
             for y in [0, 2]:
                 if self.Grid.matrix[y, x] == 1 and self.Grid.matrix[abs(y-2), abs(x-2)] == 0:
-                    return("Check Opposite Corners")
+                    return("Check Opposite Corners", abs(x-2), abs(y-2))
         return(None)
 
     def CheckEmptyCorner(self):
         for x in [0, 2]:
             for y in [0, 2]:
                 if self.Grid.matrix[y, x] == 0:
-                    return("Check Empty Corners")
+                    return("Check Empty Corners", x, y)
         return(None)
 
     def CheckEmptySide(self):
         if self.Grid.matrix[0,1] == 0:
-            return("Check Empty Side")
+            return("Check Empty Side", 1, 0)
         elif self.Grid.matrix[1,0] == 0:
-            return("Check Empty Side")
-        elif self.Grid.matrix[0,2] == 0:
-            return("Check Empty Side")
-        elif self.Grid.matrix[2,0] == 0:
-            return("Check Empty Side")
+            return("Check Empty Side", 0, 1)
+        elif self.Grid.matrix[1,2] == 0:
+            return("Check Empty Side", 2, 1)
+        elif self.Grid.matrix[2,1] == 0:
+            return("Check Empty Side", 1, 2)
 
 def main():
     # Initialize pygame
@@ -286,7 +300,10 @@ def main():
     # Initiate active player
     current_player = random.randint(1,2)
     if current_player == 2:
-        print(opponent.Algorithm())
+        opponentCoords = opponent.Algorithm()
+        print(opponentCoords[0])
+        grid.ClaimBlock(opponentCoords[1], opponentCoords[2], current_player)
+        current_player = 1
 
     # Main loop
     ## Pygame events
@@ -306,11 +323,9 @@ def main():
                 if event.key == pygame.K_DOWN:
                     cursor.move("down")
                 if event.key == pygame.K_SPACE:
-                    if grid.ClaimBlock(cursor.x, cursor.y, current_player):
-                        current_player = {1: 2, 2: 1}[current_player]
-                        if current_player == 2:
-                            # Opponent Move
-                            print(opponent.Algorithm())
+                    if current_player == 1:
+                        if grid.ClaimBlock(cursor.x, cursor.y, current_player):
+                            current_player = 2
 
         # Fill Pygame screen
         screen.fill((0,0,0))
@@ -330,13 +345,21 @@ def main():
             pygame.draw.rect(screen, (255, 0, 0), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 7)
         else:
             pygame.draw.rect(screen, (0, 0, 255), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 7)
-
-        # Update Screen
-        pygame.display.update()
-
+        
         # Check for winner
         if grid.CheckWin():
+            pygame.display.update()
             time.sleep(1)
             pygame.quit()
             sys.exit()
+
+        # Get Opponent Move
+        if current_player == 2:
+            opponentCoords = opponent.Algorithm()
+            print(opponentCoords[0])
+            grid.ClaimBlock(opponentCoords[1], opponentCoords[2], current_player)
+            current_player = 1
+
+        # Update Screen
+        pygame.display.update()
 main()
