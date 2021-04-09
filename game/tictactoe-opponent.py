@@ -346,9 +346,9 @@ def main():
 
         # Draw cursor highlight
         if current_player == 1:
-            pygame.draw.rect(screen, (150, 0, 0), (cursor.x * BLOCKSIZE + 30, cursor.y * BLOCKSIZE + 30, BLOCKSIZE - 60, BLOCKSIZE - 60))
+            pygame.draw.rect(screen, (150, 0, 0), (cursor.x * BLOCKSIZE + 30, cursor.y * BLOCKSIZE + 30, BLOCKSIZE - 55, BLOCKSIZE - 55))
         else:
-            pygame.draw.rect(screen, (0, 0, 150), (cursor.x * BLOCKSIZE + 30, cursor.y * BLOCKSIZE + 30, BLOCKSIZE - 60, BLOCKSIZE - 60))
+            pygame.draw.rect(screen, (0, 0, 150), (cursor.x * BLOCKSIZE + 30, cursor.y * BLOCKSIZE + 30, BLOCKSIZE - 55, BLOCKSIZE - 55))
         
         # Check for winner
         if grid.CheckWin():
