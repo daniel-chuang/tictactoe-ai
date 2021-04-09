@@ -346,9 +346,9 @@ def main():
 
         # Draw cursor highlight
         if current_player == 1:
-            pygame.draw.rect(screen, (255, 0, 0), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 7)
+            pygame.draw.rect(screen, (150, 0, 0), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 4)
         else:
-            pygame.draw.rect(screen, (0, 0, 255), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 7)
+            pygame.draw.rect(screen, (0, 0, 150), (cursor.x * BLOCKSIZE, cursor.y * BLOCKSIZE, BLOCKSIZE, BLOCKSIZE), 4)
         
         # Check for winner
         if grid.CheckWin():
@@ -360,7 +360,7 @@ def main():
         # Get Opponent Move
         if current_player == 2:
             opponentCoords = opponent.Algorithm()
-            print(opponentCoords[0])
+            print("The opponent's move was to", opponentCoords[0])
             grid.ClaimBlock(opponentCoords[1], opponentCoords[2], current_player)
             current_player = 1
 
