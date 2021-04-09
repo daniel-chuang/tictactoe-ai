@@ -67,8 +67,7 @@ def on_release(key):
         # Find coordinates for cursor
         for x in range(1, 4):
             for y in range(1, 4):
-                f
-                if tuple(img[y * BLOCKSIZE - 3, x * BLOCKSIZE - 3]) == CURSORRED:
+                if tuple(img[y * BLOCKSIZE - int(BLOCKSIZE/2), x * BLOCKSIZE - int(BLOCKSIZE/2)]) == CURSORRED:
                     cursorx, cursory = x - 1, y - 1
         print("X:", cursorx, "| Y:", cursory)
 
