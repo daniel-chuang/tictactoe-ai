@@ -1,0 +1,13 @@
+pygame
+sys
+time
+math
+numpy
+collections
+copy
+time
+os
+random
+opencv-python
+pyautogui
+pynput
