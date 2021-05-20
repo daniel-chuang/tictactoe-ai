@@ -1,9 +1,9 @@
 # Tictactoe AI Player
 
 #Instructions:
-In order to run this project, you must first download this repository using:
->
- change your terminal to this directory and run: 
+In order to run this project, you must first download this repository using the release of the project. Then you unzip it.
+
+Change your terminal to the downloaded directory and run: 
 > pip install -r requirements.txt
 
 Then, you can run the project using the following command:
