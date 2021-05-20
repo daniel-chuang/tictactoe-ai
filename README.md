@@ -1,6 +1,6 @@
 # Tictactoe AI Player
 
-#Instructions:
+# Instructions:
 In order to run this project, you must first download this repository using the release of the project. Then you unzip it.
 
 Change your terminal to the downloaded directory and run: 
