@@ -1,7 +1,7 @@
 # Tictactoe AI Player
 
 Demonstration video:
-[https://www.youtube.com/watch?v=aoQbNZRJz0U&feature=youtu.be](Video)
+[Video](https://www.youtube.com/watch?v=aoQbNZRJz0U&feature=youtu.be)
 
 # Instructions:
 In order to run this project, you must first download this repository using the release of the project. Then you unzip it.
